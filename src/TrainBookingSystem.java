@@ -79,7 +79,7 @@ class TrainImpl implements Train {
     public int getNumEconomyClassCoaches() {
         return ECONOMY_CLASS_COACHES;
     }
-    private boolean bookSeats(int numTickets, int coachType) {
+    boolean bookSeats(int numTickets, int coachType) {
         int availableSeats = 0;
         int[][] classSeats;
         int numCoaches;
@@ -121,7 +121,7 @@ class TrainImpl implements Train {
             return false;
         }
     }
-    private boolean deleteSeats(int numTickets, int coachType) {
+    boolean deleteSeats(int numTickets, int coachType) {
         int[][] classSeats;
         int numCoaches;
         switch (coachType) {
@@ -187,7 +187,7 @@ class TrainImpl implements Train {
     public int getAvailableEconomyClassSeats() {
         return getAvailableSeats(3);
     }
-    private int getAvailableSeats(int coachType) {
+    int getAvailableSeats(int coachType) {
         int[][] classSeats;
         int numCoaches;
         switch (coachType) {
@@ -250,14 +250,84 @@ class TrainImpl implements Train {
         return bookedTickets;
     }
 }
+class HighSpeedTrain extends TrainImpl {
+    private static final int HIGH_SPEED_COACHES = 10;
+
+    public HighSpeedTrain(String name, String startStation, String endStation) {
+        super(name, startStation, endStation);
+        initializeHighSpeedSeats();
+    }
+
+    private void initializeHighSpeedSeats() {
+        for (int i = 0; i < HIGH_SPEED_COACHES; i++) {
+            for (int j = 0; j < SEATS_PER_COACH; j++) {
+                highSpeedSeats[i][j] = 0;
+            }
+        }
+    }
+
+    private final int[][] highSpeedSeats = new int[HIGH_SPEED_COACHES][SEATS_PER_COACH];
+
+    @Override
+    public int getAvailableFirstClassSeats() {
+        return getAvailableSeats(1) + getAvailableHighSpeedSeats(1);
+    }
+
+    @Override
+    public int getAvailableBusinessClassSeats() {
+        return getAvailableSeats(2) + getAvailableHighSpeedSeats(2);
+    }
+
+    @Override
+    public int getAvailableEconomyClassSeats() {
+        return getAvailableSeats(3) + getAvailableHighSpeedSeats(3);
+    }
+
+    private int getAvailableHighSpeedSeats(int coachType) {
+        int[][] classSeats;
+        int numCoaches;
+        switch (coachType) {
+            case 1:
+                classSeats = highSpeedSeats;
+                numCoaches = HIGH_SPEED_COACHES;
+                break;
+            default:
+                return 0;
+        }
+        int availableSeats = 0;
+        for (int i = 0; i < numCoaches; i++) {
+            for (int j = 0; j < SEATS_PER_COACH; j++) {
+                if (classSeats[i][j] == 0) {
+                    availableSeats++;
+                }
+            }
+        }
+        return availableSeats;
+    }
+
+
+    @Override
+    public List<String> getBookedTickets() {
+        List<String> bookedTickets = super.getBookedTickets();
+        for (int i = 0; i < HIGH_SPEED_COACHES; i++) {
+            for (int j = 0; j < SEATS_PER_COACH; j++) {
+                if (highSpeedSeats[i][j] == 1) {
+                    bookedTickets.add("High-Speed Class - Coach " + (i + 1) + ", Seat " + (j + 1));
+                }
+            }
+        }
+        return bookedTickets;
+    }
+}
 public class TrainBookingSystem {
-    private static Train[] createTrains() {
-        Train[] trains = new Train[5];
+    static Train[] createTrains() {
+        Train[] trains = new Train[6]; // Adding one more train (High-Speed Train)
         trains[0] = new TrainImpl("Rajdhani Express (Train No. 12951)", "NDLS", "BCT");
         trains[1] = new TrainImpl("Shatabdi Express (Train No. 12002)", "BPL", "NDLS");
         trains[2] = new TrainImpl("Duronto Express (Train No. 12213)", "JP", "NDLS");
         trains[3] = new TrainImpl("Gatimaan Express (Train No. 12049)", "NDLS", "AGC");
         trains[4] = new TrainImpl("Kaveri Express (Train No. 16021)", "SBC", "MAS");
+        trains[5] = new HighSpeedTrain("Bullet Express (Train No. 8001)", "CDG", "BLR");
         return trains;
     }
     private static void printBookedTickets(Train[] trains) {
@@ -315,7 +385,7 @@ public class TrainBookingSystem {
             System.out.println("\nFailed to book " + className + " tickets. Not enough seats available.");
         }
     }
-    private static void runTrainBookingSystem(Train[] trains, Scanner scanner) {
+    static void runTrainBookingSystem(Train[] trains, Scanner scanner) {
         Train selectedTrain = null;
         while (selectedTrain == null) {
             System.out.println("\nAvailable Trains:");
@@ -419,56 +489,23 @@ public class TrainBookingSystem {
             }
         }
     }
-    private static void validateEmail(String email) {
+    static void validateEmail(String email) {
         if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
             throw new IllegalArgumentException("Invalid email format.");
         }
     }
-    private static void drawBox(String message) {
+    static void drawBox(String message) {
         int messageLength = message.length();
         int boxWidth = messageLength + 4;
         System.out.println("+" + "-".repeat(boxWidth) + "+");
         System.out.println("|  " + message + "  |");
         System.out.println("+" + "-".repeat(boxWidth) + "+");
     }
-    private static void drawEndBox() {
+    static void drawEndBox() {
         System.out.println("\n" + "+---------------------------+");
         System.out.println("|        End of Program     |");
         System.out.println("+---------------------------+");
     }
-    private static final Map<String, String> userAccounts = new HashMap<>();
 
-    public static void main(String[] args) {
-        userAccounts.put("example@gmail.com", "John Doe");
-        userAccounts.put("user123@gmail.com", "Alice Smith");
-        Scanner scanner = new Scanner(System.in);
-        drawBox(" User Login ");
-        System.out.print("Enter your Gmail: ");
-        String gmail = null;
-        try {
-            gmail = scanner.nextLine();
-            validateEmail(gmail);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid email format. Please enter a valid Gmail address.");
-            scanner.close();
-            drawEndBox();
-            return;
-        }
-        if (userAccounts.containsKey(gmail)) {
-            String name = userAccounts.get(gmail);
-            System.out.println("\nWelcome, " + name + "!");
-            System.out.println("You are logged in with Gmail: " + gmail);
-            System.out.println();
-            drawBox(" Station Prompt ");
-            System.out.print("Please enter the name of the station: ");
-            String stationName = scanner.nextLine();
-            System.out.println("\nThank you for providing the station name.");
-            System.out.println("You have selected the station: " + stationName);
-            Train[] trains = createTrains();
-            runTrainBookingSystem(trains, scanner);
-        } else {
-            System.out.println("\nError: Account with Gmail " + gmail + " does not exist.");
-            drawEndBox();
-        }
-    }
+
 }
