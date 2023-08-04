@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class main {
+public class Driver {
     private static final Map<String, String> userAccounts = new HashMap<>();
     public static void main(String[] args) {
         userAccounts.put("Dev@gmail.com", "A D Dev Nandan");
