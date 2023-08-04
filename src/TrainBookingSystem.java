@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 interface Train {
     int SEATS_PER_COACH = 50;
     int FIRST_CLASS_COACHES = 2;
@@ -291,6 +290,7 @@ public class TrainBookingSystem {
             int selectedTrainNumber = scanner.nextInt();
             if (selectedTrainNumber == 0) {
                 System.out.println("\nSorry to see you go, Hoping to meet you again");
+                drawEndBox();
                 System.exit(0);
             }
             if (selectedTrainNumber < 1 || selectedTrainNumber > trains.length) {
@@ -328,6 +328,7 @@ public class TrainBookingSystem {
             int selectedTrainNumber = scanner.nextInt();
             if (selectedTrainNumber == 0) {
                 System.out.println("\nSorry to see you go, Hoping to meet you again");
+                drawEndBox();
                 return;
             }
             if (selectedTrainNumber < 1 || selectedTrainNumber > trains.length) {
@@ -413,16 +414,62 @@ public class TrainBookingSystem {
                     break;
                 case 0:
                     System.out.println("\nThank You, Safe Travels");
+                    drawEndBox();
                     return;
                 default:
                     System.out.println("\nInvalid choice. Please try again.");
             }
         }
     }
+    private static void validateEmail(String email) {
+        if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
+    }
+    private static void drawBox(String message) {
+        int messageLength = message.length();
+        int boxWidth = messageLength + 4;
+        System.out.println("+" + "-".repeat(boxWidth) + "+");
+        System.out.println("|  " + message + "  |");
+        System.out.println("+" + "-".repeat(boxWidth) + "+");
+    }
+    private static void drawEndBox() {
+        System.out.println("\n" + "+---------------------------+");
+        System.out.println("|        End of Program     |");
+        System.out.println("+---------------------------+");
+    }
+    private static final Map<String, String> userAccounts = new HashMap<>();
+
     public static void main(String[] args) {
-        UserLogin.main(args);
-        Train[] trains = createTrains();
+        userAccounts.put("example@gmail.com", "John Doe");
+        userAccounts.put("user123@gmail.com", "Alice Smith");
         Scanner scanner = new Scanner(System.in);
+        drawBox(" User Login ");
+        System.out.print("Enter your Gmail: ");
+        String gmail = null;
+        try {
+            gmail = scanner.nextLine();
+            validateEmail(gmail); // Method for email validation
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid email format. Please enter a valid Gmail address.");
+            scanner.close();
+            drawEndBox();
+            return;
+        }
+        if (userAccounts.containsKey(gmail)) {
+            String name = userAccounts.get(gmail);
+            System.out.println("\nWelcome, " + name + "!");
+            System.out.println("You are logged in with Gmail: " + gmail);
+            System.out.println();
+            drawBox(" Station Prompt ");
+            System.out.print("Please enter the name of the station: ");
+            String stationName = scanner.nextLine();
+            System.out.println("\nThank you for providing the station name.");
+            System.out.println("You have selected the station: " + stationName);
+        } else {
+            System.out.println("\nError: Account with Gmail " + gmail + " does not exist.");
+        }
+        Train[] trains = createTrains();
         runTrainBookingSystem(trains, scanner);
     }
 }
