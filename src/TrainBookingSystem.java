@@ -1,46 +1,28 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 interface Train {
     int SEATS_PER_COACH = 50;
     int FIRST_CLASS_COACHES = 2;
     int BUSINESS_CLASS_COACHES = 3;
     int ECONOMY_CLASS_COACHES = 5;
-
     String getName();
-
     boolean bookFirstClassTicket(int numTickets);
-
     boolean bookBusinessClassTicket(int numTickets);
-
     boolean bookEconomyClassTicket(int numTickets);
-
     boolean deleteFirstClassTicket(int numTickets);
-
     boolean deleteBusinessClassTicket(int numTickets);
-
     boolean deleteEconomyClassTicket(int numTickets);
-
     int getAvailableFirstClassSeats();
-
     int getAvailableBusinessClassSeats();
-
     int getAvailableEconomyClassSeats();
-
     List<String> getBookedTickets();
-
     String getStartStation();
-
     String getEndStation();
-
     int getNumFirstClassCoaches();
-
     int getNumBusinessClassCoaches();
-
     int getNumEconomyClassCoaches();
 }
-
 class TrainImpl implements Train {
     private final String name;
     private final String startStation;
@@ -48,7 +30,6 @@ class TrainImpl implements Train {
     private final int[][] firstClassSeats;
     private final int[][] businessClassSeats;
     private final int[][] economyClassSeats;
-
     public TrainImpl(String name, String startStation, String endStation) {
         this.name = name;
         this.startStation = startStation;
@@ -58,63 +39,51 @@ class TrainImpl implements Train {
         this.economyClassSeats = new int[ECONOMY_CLASS_COACHES][SEATS_PER_COACH];
         initializeSeats();
     }
-
-
     private void initializeSeats() {
         for (int i = 0; i < FIRST_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
                 firstClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
             }
         }
-
         for (int i = 0; i < BUSINESS_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
                 businessClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
             }
         }
-
         for (int i = 0; i < ECONOMY_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
                 economyClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
             }
         }
     }
-
     @Override
     public String getName() {
         return name;
     }
-
     @Override
     public String getStartStation() {
         return startStation;
     }
-
     @Override
     public String getEndStation() {
         return endStation;
     }
-
     @Override
     public int getNumFirstClassCoaches() {
         return FIRST_CLASS_COACHES;
     }
-
     @Override
     public int getNumBusinessClassCoaches() {
         return BUSINESS_CLASS_COACHES;
     }
-
     @Override
     public int getNumEconomyClassCoaches() {
         return ECONOMY_CLASS_COACHES;
     }
-
     private boolean bookSeats(int numTickets, int coachType) {
         int availableSeats = 0;
         int[][] classSeats;
         int numCoaches;
-
         switch (coachType) {
             case 1: // First Class
                 classSeats = firstClassSeats;
@@ -131,7 +100,6 @@ class TrainImpl implements Train {
             default:
                 return false;
         }
-
         // Check for availability of seats
         for (int i = 0; i < numCoaches; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
@@ -140,7 +108,6 @@ class TrainImpl implements Train {
                 }
             }
         }
-
         if (numTickets <= availableSeats) {
             int ticketsBooked = 0;
             for (int i = 0; i < numCoaches; i++) {
@@ -156,11 +123,9 @@ class TrainImpl implements Train {
             return false;
         }
     }
-
     private boolean deleteSeats(int numTickets, int coachType) {
         int[][] classSeats;
         int numCoaches;
-
         switch (coachType) {
             case 1: // First Class
                 classSeats = firstClassSeats;
@@ -177,7 +142,6 @@ class TrainImpl implements Train {
             default:
                 return false;
         }
-
         int ticketsDeleted = 0;
         for (int i = 0; i < numCoaches; i++) {
             for (int j = 0; j < SEATS_PER_COACH && ticketsDeleted < numTickets; j++) {
@@ -189,56 +153,45 @@ class TrainImpl implements Train {
         }
         return ticketsDeleted == numTickets;
     }
-
     @Override
     public boolean bookFirstClassTicket(int numTickets) {
         return bookSeats(numTickets, 1);
     }
-
     @Override
     public boolean bookBusinessClassTicket(int numTickets) {
         return bookSeats(numTickets, 2);
     }
-
     @Override
     public boolean bookEconomyClassTicket(int numTickets) {
         return bookSeats(numTickets, 3);
     }
-
     @Override
     public boolean deleteFirstClassTicket(int numTickets) {
         return deleteSeats(numTickets, 1);
     }
-
     @Override
     public boolean deleteBusinessClassTicket(int numTickets) {
         return deleteSeats(numTickets, 2);
     }
-
     @Override
     public boolean deleteEconomyClassTicket(int numTickets) {
         return deleteSeats(numTickets, 3);
     }
-
     @Override
     public int getAvailableFirstClassSeats() {
         return getAvailableSeats(1);
     }
-
     @Override
     public int getAvailableBusinessClassSeats() {
         return getAvailableSeats(2);
     }
-
     @Override
     public int getAvailableEconomyClassSeats() {
         return getAvailableSeats(3);
     }
-
     private int getAvailableSeats(int coachType) {
         int[][] classSeats;
         int numCoaches;
-
         switch (coachType) {
             case 1: // First Class
                 classSeats = firstClassSeats;
@@ -255,7 +208,6 @@ class TrainImpl implements Train {
             default:
                 return 0;
         }
-
         int availableSeats = 0;
         for (int i = 0; i < numCoaches; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
@@ -266,16 +218,13 @@ class TrainImpl implements Train {
         }
         return availableSeats;
     }
-
     @Override
     public List<String> getBookedTickets() {
         List<String> bookedTickets = new ArrayList<>();
         String[] classTypes = {"First Class", "Business Class", "Economy Class"};
-
         for (int coachType = 1; coachType <= ECONOMY_CLASS_COACHES; coachType++) {
             int[][] classSeats;
             int numCoaches;
-
             switch (coachType) {
                 case 1: // First Class
                     classSeats = firstClassSeats;
@@ -292,7 +241,6 @@ class TrainImpl implements Train {
                 default:
                     continue;
             }
-
             for (int i = 0; i < numCoaches; i++) {
                 for (int j = 0; j < SEATS_PER_COACH; j++) {
                     if (classSeats[i][j] == 1) {
@@ -304,7 +252,6 @@ class TrainImpl implements Train {
         return bookedTickets;
     }
 }
-
 public class TrainBookingSystem {
     private static Train[] createTrains() {
         Train[] trains = new Train[5];
@@ -315,15 +262,13 @@ public class TrainBookingSystem {
         trains[4] = new TrainImpl("Kaveri Express (Train No. 16021)", "SBC", "MAS");
         return trains;
     }
-
     private static void printBookedTickets(Train[] trains) {
         boolean hasBookedTickets = false;
-
         for (Train train : trains) {
             List<String> bookedTickets = train.getBookedTickets();
             if (!bookedTickets.isEmpty()) {
                 hasBookedTickets = true;
-                System.out.println("Booked Tickets for " + train.getName() + " (From " + train.getStartStation() +
+                System.out.println("\nBooked Tickets for " + train.getName() + " (From " + train.getStartStation() +
                         " to " + train.getEndStation() + "):");
                 for (String ticket : bookedTickets) {
                     System.out.println(ticket);
@@ -331,81 +276,68 @@ public class TrainBookingSystem {
                 System.out.println();
             }
         }
-
         if (!hasBookedTickets) {
-            System.out.println("No tickets have been booked yet.");
+            System.out.println("\nNo tickets have been booked yet.");
         }
     }
-
-
     private static Train changeTrain(Train[] trains, Scanner scanner) {
         Train selectedTrain = null;
         while (selectedTrain == null) {
-            System.out.println("Available Trains:");
+            System.out.println("\nAvailable Trains:");
             for (int i = 0; i < trains.length; i++) {
                 System.out.println((i + 1) + ". " + trains[i].getName());
             }
-
             System.out.print("Enter the train number you want to book (0 to exit): ");
             int selectedTrainNumber = scanner.nextInt();
-
             if (selectedTrainNumber == 0) {
-                System.out.println("Sorry to see you go, Hoping to meet you again");
+                System.out.println("\nSorry to see you go, Hoping to meet you again");
                 System.exit(0);
             }
-
             if (selectedTrainNumber < 1 || selectedTrainNumber > trains.length) {
-                System.out.println("Invalid train number. Please try again.");
+                System.out.println("\nInvalid train number. Please try again.");
             } else {
                 selectedTrain = trains[selectedTrainNumber - 1];
-                System.out.println("You have selected " + selectedTrain.getName());
+                System.out.println("\nYou have selected " + selectedTrain.getName());
             }
         }
         return selectedTrain;
     }
-
     private static void printDeletionStatus(String className, int numTickets, boolean success) {
         if (success) {
-            System.out.println(numTickets + " " + className + " ticket(s) deleted successfully!");
+            System.out.println("\n" + numTickets + " " + className + " ticket(s) deleted successfully!");
         } else {
-            System.out.println("Failed to delete " + className + " tickets. Tickets not found.");
+            System.out.println("\nFailed to delete " + className + " tickets. Tickets not found.");
         }
     }
-
     private static void printBookingStatus(String className, int numTickets, boolean success) {
         if (success) {
-            System.out.println(numTickets + " " + className + " ticket(s) booked successfully!");
+            System.out.println("\n" + numTickets + " " + className + " ticket(s) booked successfully!");
         } else {
-            System.out.println("Failed to book " + className + " tickets. Not enough seats available.");
+            System.out.println("\nFailed to book " + className + " tickets. Not enough seats available.");
         }
     }
-
     private static void runTrainBookingSystem(Train[] trains, Scanner scanner) {
         // Selecting a train
         Train selectedTrain = null;
         while (selectedTrain == null) {
-            System.out.println("Available Trains:");
+            System.out.println("\nAvailable Trains:");
             for (int i = 0; i < trains.length; i++) {
                 System.out.println((i + 1) + ". " + trains[i].getName());
             }
-
             System.out.print("Enter the train number you want to book (0 to exit): ");
             int selectedTrainNumber = scanner.nextInt();
-
             if (selectedTrainNumber == 0) {
-                System.out.println("Sorry to see you go, Hoping to meet you again");
+                System.out.println("\nSorry to see you go, Hoping to meet you again");
                 return;
             }
-
             if (selectedTrainNumber < 1 || selectedTrainNumber > trains.length) {
-                System.out.println("Invalid train number. Please try again.");
+                System.out.println("\nInvalid train number. Please try again.");
             } else {
                 selectedTrain = trains[selectedTrainNumber - 1];
-                System.out.println("You have selected " + selectedTrain.getName());
-                System.out.println("Number of First Class Coaches: " + selectedTrain.getNumFirstClassCoaches());
+                System.out.println("\nYou have selected " + selectedTrain.getName());
+                System.out.println("\nNumber of First Class Coaches: " + selectedTrain.getNumFirstClassCoaches());
                 System.out.println("Number of Business Class Coaches: " + selectedTrain.getNumBusinessClassCoaches());
                 System.out.println("Number of Economy Class Coaches: " + selectedTrain.getNumEconomyClassCoaches());
-
             }
         }
         while (true) {
@@ -422,78 +354,75 @@ public class TrainBookingSystem {
             System.out.println("10. View Booked Tickets");
             System.out.println("11. Change Train");
             System.out.println("0. Exit");
-
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-
             int numTickets;
             boolean success;
-
             switch (choice) {
                 case 1:
-                    System.out.print("Enter the number of First Class tickets to book: ");
+                    System.out.print("\nEnter the number of First Class tickets to book: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.bookFirstClassTicket(numTickets);
                     printBookingStatus("First Class", numTickets, success);
                     break;
                 case 2:
-                    System.out.print("Enter the number of Business Class tickets to book: ");
+                    System.out.print("\nEnter the number of Business Class tickets to book: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.bookBusinessClassTicket(numTickets);
                     printBookingStatus("Business Class", numTickets, success);
                     break;
                 case 3:
-                    System.out.print("Enter the number of Economy Class tickets to book: ");
+                    System.out.print("\nEnter the number of Economy Class tickets to book: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.bookEconomyClassTicket(numTickets);
                     printBookingStatus("Economy Class", numTickets, success);
                     break;
                 case 4:
-                    System.out.print("Enter the number of First Class tickets to delete: ");
+                    System.out.print("\nEnter the number of First Class tickets to delete: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.deleteFirstClassTicket(numTickets);
                     printDeletionStatus("First Class", numTickets, success);
                     break;
                 case 5:
-                    System.out.print("Enter the number of Business Class tickets to delete: ");
+                    System.out.print("\nEnter the number of Business Class tickets to delete: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.deleteBusinessClassTicket(numTickets);
                     printDeletionStatus("Business Class", numTickets, success);
                     break;
                 case 6:
-                    System.out.print("Enter the number of Economy Class tickets to delete: ");
+                    System.out.print("\nEnter the number of Economy Class tickets to delete: ");
                     numTickets = scanner.nextInt();
                     success = selectedTrain.deleteEconomyClassTicket(numTickets);
                     printDeletionStatus("Economy Class", numTickets, success);
                     break;
                 case 7:
-                    System.out.println("Available First Class seats: " + selectedTrain.getAvailableFirstClassSeats());
+                    System.out.println("\nAvailable First Class seats: " + selectedTrain.getAvailableFirstClassSeats());
                     break;
                 case 8:
-                    System.out.println("Available Business Class seats: " + selectedTrain.getAvailableBusinessClassSeats());
+                    System.out.println("\nAvailable Business Class seats: " + selectedTrain.getAvailableBusinessClassSeats());
                     break;
                 case 9:
-                    System.out.println("Available Economy Class seats: " + selectedTrain.getAvailableEconomyClassSeats());
+                    System.out.println("\nAvailable Economy Class seats: " + selectedTrain.getAvailableEconomyClassSeats());
                     break;
                 case 10:
                     printBookedTickets(trains);
                     break;
                 case 11:
-                    System.out.println("Changing Train...");
+                    System.out.println("\nChanging Train...");
                     selectedTrain = changeTrain(trains, scanner);
                     break;
                 case 0:
-                    System.out.println("Thank You, Safe Travels");
+                    System.out.println("\nThank You, Safe Travels");
                     return;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("\nInvalid choice. Please try again.");
             }
         }
     }
     public static void main(String[] args) {
+        UserLogin.main(args);
         Train[] trains = createTrains();
         Scanner scanner = new Scanner(System.in);
         runTrainBookingSystem(trains, scanner);
     }
-
 }
