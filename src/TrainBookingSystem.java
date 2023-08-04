@@ -41,17 +41,17 @@ class TrainImpl implements Train {
     private void initializeSeats() {
         for (int i = 0; i < FIRST_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
-                firstClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
+                firstClassSeats[i][j] = 0;
             }
         }
         for (int i = 0; i < BUSINESS_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
-                businessClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
+                businessClassSeats[i][j] = 0;
             }
         }
         for (int i = 0; i < ECONOMY_CLASS_COACHES; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
-                economyClassSeats[i][j] = 0; // 0 means seat is available, 1 means seat is booked
+                economyClassSeats[i][j] = 0;
             }
         }
     }
@@ -84,22 +84,21 @@ class TrainImpl implements Train {
         int[][] classSeats;
         int numCoaches;
         switch (coachType) {
-            case 1: // First Class
+            case 1:
                 classSeats = firstClassSeats;
                 numCoaches = FIRST_CLASS_COACHES;
                 break;
-            case 2: // Business Class
+            case 2:
                 classSeats = businessClassSeats;
                 numCoaches = BUSINESS_CLASS_COACHES;
                 break;
-            case 3: // Economy Class
+            case 3:
                 classSeats = economyClassSeats;
                 numCoaches = ECONOMY_CLASS_COACHES;
                 break;
             default:
                 return false;
         }
-        // Check for availability of seats
         for (int i = 0; i < numCoaches; i++) {
             for (int j = 0; j < SEATS_PER_COACH; j++) {
                 if (classSeats[i][j] == 0) {
@@ -126,15 +125,15 @@ class TrainImpl implements Train {
         int[][] classSeats;
         int numCoaches;
         switch (coachType) {
-            case 1: // First Class
+            case 1:
                 classSeats = firstClassSeats;
                 numCoaches = FIRST_CLASS_COACHES;
                 break;
-            case 2: // Business Class
+            case 2:
                 classSeats = businessClassSeats;
                 numCoaches = BUSINESS_CLASS_COACHES;
                 break;
-            case 3: // Economy Class
+            case 3:
                 classSeats = economyClassSeats;
                 numCoaches = ECONOMY_CLASS_COACHES;
                 break;
@@ -192,15 +191,15 @@ class TrainImpl implements Train {
         int[][] classSeats;
         int numCoaches;
         switch (coachType) {
-            case 1: // First Class
+            case 1:
                 classSeats = firstClassSeats;
                 numCoaches = FIRST_CLASS_COACHES;
                 break;
-            case 2: // Business Class
+            case 2:
                 classSeats = businessClassSeats;
                 numCoaches = BUSINESS_CLASS_COACHES;
                 break;
-            case 3: // Economy Class
+            case 3:
                 classSeats = economyClassSeats;
                 numCoaches = ECONOMY_CLASS_COACHES;
                 break;
@@ -225,15 +224,15 @@ class TrainImpl implements Train {
             int[][] classSeats;
             int numCoaches;
             switch (coachType) {
-                case 1: // First Class
+                case 1:
                     classSeats = firstClassSeats;
                     numCoaches = FIRST_CLASS_COACHES;
                     break;
-                case 2: // Business Class
+                case 2:
                     classSeats = businessClassSeats;
                     numCoaches = BUSINESS_CLASS_COACHES;
                     break;
-                case 3: // Economy Class
+                case 3:
                     classSeats = economyClassSeats;
                     numCoaches = ECONOMY_CLASS_COACHES;
                     break;
@@ -317,7 +316,6 @@ public class TrainBookingSystem {
         }
     }
     private static void runTrainBookingSystem(Train[] trains, Scanner scanner) {
-        // Selecting a train
         Train selectedTrain = null;
         while (selectedTrain == null) {
             System.out.println("\nAvailable Trains:");
@@ -449,7 +447,7 @@ public class TrainBookingSystem {
         String gmail = null;
         try {
             gmail = scanner.nextLine();
-            validateEmail(gmail); // Method for email validation
+            validateEmail(gmail);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid email format. Please enter a valid Gmail address.");
             scanner.close();
@@ -466,10 +464,11 @@ public class TrainBookingSystem {
             String stationName = scanner.nextLine();
             System.out.println("\nThank you for providing the station name.");
             System.out.println("You have selected the station: " + stationName);
+            Train[] trains = createTrains();
+            runTrainBookingSystem(trains, scanner);
         } else {
             System.out.println("\nError: Account with Gmail " + gmail + " does not exist.");
+            drawEndBox();
         }
-        Train[] trains = createTrains();
-        runTrainBookingSystem(trains, scanner);
     }
 }
